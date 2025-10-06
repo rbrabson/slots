@@ -237,6 +237,7 @@ func (p *PayoutAmount) String() string {
 	sb.WriteString("]")
 	sb.WriteString(", Bet: " + strconv.Itoa(p.Bet))
 	sb.WriteString(", Payout: " + strconv.FormatFloat(p.Payout, 'f', -1, 64))
+	sb.WriteString(", Message: " + p.Message)
 	sb.WriteString("]")
 	sb.WriteString("}")
 
