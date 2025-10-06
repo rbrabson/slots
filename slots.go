@@ -64,16 +64,16 @@ type SpinResult struct {
 
 // String returns a string representation of the Spin.
 func (s *SpinResult) String() string {
-	return fmt.Sprintf("Spin{Payline: %v, TopLine: %v, BottomLine: %v, Bet: %d, Payout: %d}", s.Payline, s.TopLine, s.BottomLine, s.Bet, s.Payout)
+	return fmt.Sprintf("Spin{Payline: %v, TopLine: %v, BottomLine: %v, Bet: %d, Payout: %d, Message: %s}", s.Payline, s.TopLine, s.BottomLine, s.Bet, s.Payout, s.Message)
 }
 
 // Spin simulates a spin of the slot machine with the given bet amount and returns the result of the spin,
-// including the payline, previous line, next line, bet amount, and payout amount.
+// including the payline, previous line, next line, bet amount, and payout amount and message.
 func (sm *SlotMachine) Spin(bet int) *SpinResult {
 	paylineIndices, payline := sm.LookupTable.GetPaylineSpin()
 	previousIndices, previousLine := sm.LookupTable.GetPreviousSpin(paylineIndices)
 	_, nextLine := sm.LookupTable.GetNextSpin(paylineIndices, previousIndices)
-	payoutAmount := sm.PayoutTable.GetPayoutAmount(bet, payline)
+	payoutAmount, payoutMessage := sm.PayoutTable.GetPayoutAmount(bet, payline)
 
 	spinResult := &SpinResult{
 		Payline:    payline,
@@ -81,6 +81,7 @@ func (sm *SlotMachine) Spin(bet int) *SpinResult {
 		TopLine:    nextLine,
 		Bet:        bet,
 		Payout:     payoutAmount,
+		Message:    payoutMessage,
 	}
 
 	slog.Debug("slot machine spin result",

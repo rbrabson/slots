@@ -25,8 +25,9 @@ var (
 				"white 7",
 				"blue 7",
 			},
-			Bet:    1,
-			Payout: 2400,
+			Bet:     1,
+			Payout:  2400,
+			Message: "Jackpot!",
 		},
 		{
 			Win: []string{
@@ -34,8 +35,9 @@ var (
 				"red 7",
 				"red 7",
 			},
-			Bet:    1,
-			Payout: 1200,
+			Bet:     1,
+			Payout:  1200,
+			Message: "Three red 7s!",
 		},
 		{
 			Win: []string{
@@ -43,8 +45,9 @@ var (
 				"white 7",
 				"white 7",
 			},
-			Bet:    1,
-			Payout: 200,
+			Bet:     1,
+			Payout:  200,
+			Message: "Three white 7s!",
 		},
 		{
 			Win: []string{
@@ -52,8 +55,9 @@ var (
 				"blue 7",
 				"blue 7",
 			},
-			Bet:    1,
-			Payout: 150,
+			Bet:     1,
+			Payout:  150,
+			Message: "Three blue 7s!",
 		},
 		{
 			Win: []string{
@@ -61,8 +65,9 @@ var (
 				"any 7",
 				"any 7",
 			},
-			Bet:    1,
-			Payout: 50,
+			Bet:     1,
+			Payout:  50,
+			Message: "Three 7s!",
 		},
 		{
 			Win: []string{
@@ -70,8 +75,9 @@ var (
 				"2 bar",
 				"3 bar",
 			},
-			Bet:    1,
-			Payout: 50,
+			Bet:     1,
+			Payout:  50,
+			Message: "Bar 1, bar 2, bar 3!",
 		},
 		{
 			Win: []string{
@@ -79,8 +85,9 @@ var (
 				"3 bar",
 				"3 bar",
 			},
-			Bet:    1,
-			Payout: 40,
+			Bet:     1,
+			Payout:  40,
+			Message: "Three 3 bars!",
 		},
 		{
 			Win: []string{
@@ -88,8 +95,9 @@ var (
 				"2 bar",
 				"2 bar",
 			},
-			Bet:    1,
-			Payout: 25,
+			Bet:     1,
+			Payout:  25,
+			Message: "Three 2 bars!",
 		},
 		{
 			Win: []string{
@@ -97,8 +105,9 @@ var (
 				"any white",
 				"any blue",
 			},
-			Bet:    1,
-			Payout: 20,
+			Bet:     1,
+			Payout:  20,
+			Message: "Red, White, and Blue!",
 		},
 		{
 			Win: []string{
@@ -106,8 +115,9 @@ var (
 				"1 bar",
 				"1 bar",
 			},
-			Bet:    1,
-			Payout: 10,
+			Bet:     1,
+			Payout:  10,
+			Message: "All 1 bars!",
 		},
 		{
 			Win: []string{
@@ -115,8 +125,9 @@ var (
 				"any bar",
 				"any bar",
 			},
-			Bet:    1,
-			Payout: 5,
+			Bet:     1,
+			Payout:  5,
+			Message: "All bars!",
 		},
 		{
 			Win: []string{
@@ -124,8 +135,9 @@ var (
 				"any red",
 				"any red",
 			},
-			Bet:    1,
-			Payout: 2,
+			Bet:     1,
+			Payout:  2,
+			Message: "All red!",
 		},
 		{
 			Win: []string{
@@ -133,8 +145,9 @@ var (
 				"any white",
 				"any white",
 			},
-			Bet:    1,
-			Payout: 2,
+			Bet:     1,
+			Payout:  2,
+			Message: "All white!",
 		},
 		{
 			Win: []string{
@@ -142,8 +155,9 @@ var (
 				"any blue",
 				"any blue",
 			},
-			Bet:    1,
-			Payout: 2,
+			Bet:     1,
+			Payout:  2,
+			Message: "All blue!",
 		},
 		{
 			Win: []string{
@@ -151,8 +165,9 @@ var (
 				"matching non-blank",
 				"any",
 			},
-			Bet:    1,
-			Payout: 1.5,
+			Bet:     1,
+			Payout:  1.5,
+			Message: "Two consecutive non-blanks!",
 		},
 		{
 			Win: []string{
@@ -160,8 +175,9 @@ var (
 				"matching non-blank",
 				"matching non-blank",
 			},
-			Bet:    1,
-			Payout: 1.5,
+			Bet:     1,
+			Payout:  1.5,
+			Message: "Two consecutive non-blanks!",
 		},
 		{
 			Win: []string{
@@ -169,8 +185,9 @@ var (
 				"blank",
 				"blank",
 			},
-			Bet:    1,
-			Payout: 1,
+			Bet:     1,
+			Payout:  1,
+			Message: "All blanks!",
 		},
 	}
 )
@@ -205,9 +222,10 @@ func (p *Payout) String() string {
 
 // PayoutAmount defines a winning combination and the payout amounts for different bets.
 type PayoutAmount struct {
-	Win    []string `json:"win" bson:"win"`
-	Bet    int      `json:"bet" bson:"bet"`
-	Payout float64  `json:"payout" bson:"payout"`
+	Win     []string `json:"win" bson:"win"`
+	Bet     int      `json:"bet" bson:"bet"`
+	Payout  float64  `json:"payout" bson:"payout"`
+	Message string   `json:"message,omitempty" bson:"message,omitempty"`
 }
 
 // String returns a string representation of the PayoutAmount.
@@ -244,16 +262,16 @@ func (pt PayoutTable) String() string {
 	return sb.String()
 }
 
-func (pt *PayoutTable) GetPayoutAmount(bet int, spin []string) int {
+func (pt *PayoutTable) GetPayoutAmount(bet int, spin []string) (int, string) {
 	for _, payout := range *pt {
 		if payout.Bet == bet {
 			amount := payout.GetPayoutAmount(bet, spin)
 			if amount > 0 {
-				return amount
+				return amount, payout.Message
 			}
 		}
 	}
-	return 0
+	return 0, ""
 }
 
 // GetPayoutAmount returns the payout amount for a given bet and spin result.
