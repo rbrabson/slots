@@ -265,11 +265,9 @@ func (pt PayoutTable) String() string {
 
 func (pt *PayoutTable) GetPayoutAmount(bet int, spin []string) (int, string) {
 	for _, payout := range *pt {
-		if payout.Bet == bet {
-			amount := payout.GetPayoutAmount(bet, spin)
-			if amount > 0 {
-				return amount, payout.Message
-			}
+		amount := payout.GetPayoutAmount(bet, spin)
+		if amount > 0 {
+			return amount, payout.Message
 		}
 	}
 	return 0, ""
