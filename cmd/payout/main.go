@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/rbrabson/slots"
@@ -15,6 +14,7 @@ type PayoutProbability struct {
 	Probability float64
 	NumMatches  int
 	Return      float64
+	Message     string
 }
 
 func main() {
@@ -28,7 +28,6 @@ func main() {
 	}
 
 	probabilities := make([]PayoutProbability, 0, len(sm.PayoutTable))
-
 	for _, payout := range sm.PayoutTable {
 		payoutProbability := getProbabilityOfWin(&payout, sm)
 		probabilities = append(probabilities, *payoutProbability)
@@ -45,7 +44,7 @@ func main() {
 	for _, prob := range probabilities {
 		if prob.NumMatches != 0 {
 			payoutStr := strconv.FormatFloat(prob.Payout.Payout, 'f', -1, 64)
-			spin := "[" + strings.Join(prob.Spin, " | ") + "]"
+			spin := prob.Message
 			fmt.Printf("%s, %d, %d:%s, %.4f%%, %.4f%%\n", spin, prob.NumMatches, prob.Payout.Bet, payoutStr, prob.Probability, prob.Return)
 		}
 	}
@@ -69,7 +68,6 @@ func getProbabilityOfWin(payout *slots.PayoutAmount, sm *slots.SlotMachine) *Pay
 				for _, p := range sm.PayoutTable {
 					payoutAmount := p.GetPayoutAmount(1, []string{symbol1, symbol2, symbol3})
 					if payoutAmount > 0 && !(p.Win[0] == payout.Win[0] && p.Win[1] == payout.Win[1] && p.Win[2] == payout.Win[2]) {
-						// fmt.Println("Skipping ", []string{symbol1, symbol2, symbol3}, " because it matches ", p, " instead of ", payout)
 						continue
 					}
 				}
@@ -90,6 +88,7 @@ func getProbabilityOfWin(payout *slots.PayoutAmount, sm *slots.SlotMachine) *Pay
 		Payout:      slots.PayoutAmount{Bet: bet, Payout: payoutAmount},
 		Probability: probability * 100.0,
 		NumMatches:  numMatches,
+		Message:     payout.Message,
 		Return:      (float64(payoutAmount) / float64(bet)) * probability * 100.0,
 	}
 }
