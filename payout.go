@@ -284,6 +284,7 @@ func (payout *PayoutAmount) GetPayoutAmount(bet int, spin []string) int {
 	return int(float64(bet) * payout.Payout)
 }
 
+// symbolMatch checks if a symbol matches a payout condition.
 func symbolMatch(symbol string, match string) bool {
 	if symbol == match {
 		return true
