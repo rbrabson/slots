@@ -181,7 +181,7 @@ var (
 			"blank",
 			"blank",
 			"3 bar",
-			"blank",
+			"3 bar",
 			"blank",
 			"blank",
 			"blank",
