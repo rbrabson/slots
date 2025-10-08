@@ -247,14 +247,12 @@ func (lt LookupTable) String() string {
 // GetPaylineSpin selects a random symbol from each reel to create the current spin.
 // It returns the indices of the selected symbols and the symbols themselves.
 func (lt LookupTable) GetPaylineSpin() ([]int, []string) {
+	currentSpin := make([]string, 0, len(lt))
 	currentIndices := make([]int, 0, len(lt))
 	for _, reel := range lt {
-		randIndex := rand.Int31n(int32(len(reel)))
+		randIndex := rand.Intn(len(reel))
 		currentIndices = append(currentIndices, int(randIndex))
-	}
-	currentSpin := make([]string, 0, 3)
-	for i, reel := range lt {
-		currentSpin = append(currentSpin, reel[currentIndices[i]])
+		currentSpin = append(currentSpin, reel[randIndex])
 	}
 	return currentIndices, currentSpin
 }
@@ -263,7 +261,7 @@ func (lt LookupTable) GetPaylineSpin() ([]int, []string) {
 // It returns the indices of the previous symbols and the symbols themselves.
 // The previous symbol for each reel is the first symbol that is different from the current symbol,
 func (lt LookupTable) GetPreviousSpin(currentIndices []int) ([]int, []string) {
-	previousSpin := make([]string, 0, 3)
+	previousSpin := make([]string, 0, len(lt))
 	previousIndices := make([]int, 0, len(lt))
 	for i, reel := range lt {
 		previousIndex := lt.GetPreviousIndex(reel, currentIndices[i])
@@ -294,7 +292,7 @@ func (lt LookupTable) GetPreviousIndex(reel Reel, currentIndex int) int {
 // It returns the indices of the next symbols and the symbols themselves.
 // The next symbol for each reel is the first symbol that is different from the current symbol.
 func (lt LookupTable) GetNextSpin(currentIndices []int, previousIndices []int) ([]int, []string) {
-	nextSpin := make([]string, 0, 3)
+	nextSpin := make([]string, 0, len(lt))
 	nextIndices := make([]int, 0, len(lt))
 	for i, reel := range lt {
 		nextIndex := lt.GetNextIndex(reel, currentIndices[i], previousIndices[i])
